@@ -3,17 +3,14 @@
 
 # use Cypress provided image with all dependencies included
 FROM cypress/included:12.3.0
-RUN node --version
-RUN npm --version
-
-ENV TERM=xterm
 
 WORKDIR /tractable
 
+RUN node --version && \
+    npm --version
 # copy our test application
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json serve.json ./
 COPY app ./app
-COPY serve.json ./
 
 # copy Cypress tests
 COPY cypress.config.js cypress ./
@@ -21,19 +18,21 @@ COPY cypress ./cypress
 
 # avoid many lines of progress bars during install
 # https://github.com/cypress-io/cypress/issues/1243
-ENV CI=1
+ENV CI=true
+ENV CYPRESS_CACHE_FOLDER=cache
 
 # install NPM dependencies and Cypress binary
 RUN npm ci
-RUN npx cypress cache path
-RUN npx cypress cache list
 
-# check if the binary was installed successfully
-RUN npx cypress verify
-RUN npx cypress info
-RUN npx cypress version
+RUN npx cypress cache path && \
+    npx cypress cache list && \
+    npx cypress verify && \
+    npx cypress info && \
+    npx cypress version
 
 # EXPOSE 8181
 # EXPOSE 8080
 # Used for Xvfb screen. Reference https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
 EXPOSE 8099
+
+ENV TERM=xterm
