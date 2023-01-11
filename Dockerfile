@@ -25,9 +25,13 @@ ARG LOCAL_CACHE_DIR=/root/.cache
 ENV CYPRESS_CACHE_FOLDER=/qa-automation/.cache/Cypress
 # Copy local cypress cache over into docker image
 COPY $LOCAL_CACHE_DIR .cache
+RUN mkdir -p $LOCAL_CACHE_DIR && \
+    ls -al $LOCAL_CACHE_DIR && \
+    mkdir -p $CYPRESS_CACHE_FOLDER && \
+    ls -al $CYPRESS_CACHE_FOLDER
 
 # Install all dependencies
-RUN env && ls -al $CYPRESS_CACHE_FOLDER && yarn install --frozen-lockfile
+RUN env && yarn install --frozen-lockfile
 # Alternatively if npm project:
 #   RUN npm ci
 
