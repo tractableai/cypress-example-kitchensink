@@ -39,9 +39,7 @@ RUN npx cypress cache path && \
 # EXPOSE 8181
 # EXPOSE 8080
 # Used for Xvfb screen. Reference https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
-EXPOSE 8099
-ENV TERM=xterm
-ENV DISPLAY=:8099
+
 RUN printf "#!/bin/bash \
 \nXvfb -screen 0 1024x768x24 :8099 & \
 \nwhile true \
@@ -52,4 +50,10 @@ RUN printf "#!/bin/bash \
 \ndone \
 " > entrypoint.sh && cat /qa-automation/entrypoint.sh
 
-ENTRYPOINT ["sh", "/qa-automation/entrypoint.sh"]
+#ENV DISPLAY=:8099
+EXPOSE 8099
+ENV TERM=xterm
+
+# Switch workdir
+WORKDIR /qa-automation/cypress
+ENTRYPOINT ["npx"]
