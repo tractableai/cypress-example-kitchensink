@@ -2,14 +2,19 @@
 # https://documentation.codeship.com/pro/languages-frameworks/nodejs/
 
 # use Cypress provided image with all dependencies included
-FROM cypress/base:10
+FROM cypress/included:12.3.0
 RUN node --version
 RUN npm --version
-WORKDIR /home/node/app
+
+ENV TERM=xterm
+
+WORKDIR /tractable
+
 # copy our test application
 COPY package.json package-lock.json ./
 COPY app ./app
 COPY serve.json ./
+
 # copy Cypress tests
 COPY cypress.config.js cypress ./
 COPY cypress ./cypress
@@ -20,5 +25,15 @@ ENV CI=1
 
 # install NPM dependencies and Cypress binary
 RUN npm ci
+RUN npx cypress cache path
+RUN npx cypress cache list
+
 # check if the binary was installed successfully
-RUN $(npm bin)/cypress verify
+RUN npx cypress verify
+RUN npx cypress info
+RUN npx cypress version
+
+# EXPOSE 8181
+# EXPOSE 8080
+# Used for Xvfb screen. Reference https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
+EXPOSE 8099
