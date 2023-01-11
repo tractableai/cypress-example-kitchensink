@@ -18,17 +18,16 @@ COPY cypress ./cypress
 
 # avoid many lines of progress bars during install
 # https://github.com/cypress-io/cypress/issues/1243
-ENV CI=true
-ENV CYPRESS_CACHE_FOLDER=cache
 
 # install NPM dependencies and Cypress binary
-RUN npm ci
+ENV CI=true
+ENV CYPRESS_CACHE_FOLDER=cache
+RUN mkdir -p cache && npm ci
 
 RUN npx cypress cache path && \
     npx cypress cache list && \
-    npx cypress verify && \
-    npx cypress info && \
-    npx cypress version
+    npx cypress version && \
+    npx cypress verify
 
 # EXPOSE 8181
 # EXPOSE 8080
