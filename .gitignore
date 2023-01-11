@@ -11,3 +11,4 @@ cypress/fixtures/users.json
 env
 .DS_Store
 .idea
+.cache

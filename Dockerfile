@@ -1,12 +1,6 @@
 # use Cypress provided image with all dependencies included
 FROM cypress/included:10.11.0
 
-# Set the Cypress Cache folder
-# During CI in Harness it should be `/harness/.cache`
-ARG CYPRESS_CACHE=/root/.cache/Cypress
-ENV CYPRESS_CACHE_FOLDER=$CYPRESS_CACHE
-RUN env
-
 # Install ffmpeg and xvfb
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg=7:4.3.5-0+deb11u1 \
@@ -24,8 +18,16 @@ COPY app ./app
 COPY cypress.config.js cypress ./
 COPY cypress ./cypress
 
+# Set the Cypress Cache folder
+# During CI in Harness it should be `/harness/.cache`
+# The `/harness/.cache` should be populated by one of the S3 retrieve cache steps
+ARG CYPRESS_CACHE=/root/.cache/Cypress
+ENV CYPRESS_CACHE_FOLDER=/qa-automation/.cache
+# Copy local cypress cache over into docker image
+COPY $CYPRESS_CACHE .cache
+
 # Install all dependencies
-RUN env && CI=true yarn install --frozen-lockfile
+RUN env && ls -al $CYPRESS_CACHE_FOLDER && yarn install --frozen-lockfile
 # Alternatively if npm project:
 #   RUN npm ci
 
