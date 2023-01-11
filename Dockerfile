@@ -52,8 +52,8 @@ RUN printf "#!/bin/bash \
 
 #ENV DISPLAY=:8099
 EXPOSE 8099
-ENV TERM=xterm
+# ENV TERM=xterm
 
 # Switch workdir
-WORKDIR /qa-automation/cypress
+WORKDIR /qa-automation
 ENTRYPOINT ["npx"]
