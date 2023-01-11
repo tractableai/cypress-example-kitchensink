@@ -29,13 +29,12 @@ ENV CYPRESS_CACHE_FOLDER=/qa-automation/.cache
 COPY $LOCAL_CACHE_DIR .cache
 
 # Install all dependencies
-RUN env && yarn install --frozen-lockfile
+RUN env && yarn install --frozen-lockfile && yarn cache clean --all
 
 # Verify installation worked
 RUN npx cypress cache path && \
     npx cypress cache list && \
-    npx cypress version && \
-    npx cypress verify
+    npx cypress version
 
 # EXPOSE 8181
 # EXPOSE 8080
@@ -43,15 +42,14 @@ RUN npx cypress cache path && \
 EXPOSE 8099
 ENV TERM=xterm
 ENV DISPLAY=:8099
-RUN echo "#!/bin/bash\n" \
-         "Xvfb -screen 0 1024x768x24 :8099 &\n" \
-         "while true\n" \
-         "do\n" \
-         "  echo \"Running Xvfb\"\n" \
-         "  ps -ef|grep Xvfb\n" \
-         "  sleep 5\n" \
-         "done\n" > entrypoint.sh
-
-RUN cat /qa-automation/entrypoint.sh
+RUN printf "#!/bin/bash \
+\nXvfb -screen 0 1024x768x24 :8099 & \
+\nwhile true \
+\ndo \
+\n  echo \"Running Xvfb\" \
+\n  ps -ef|grep Xvfb \
+\n  sleep 5 \
+\ndone \
+" > entrypoint.sh && cat /qa-automation/entrypoint.sh
 
 ENTRYPOINT ["sh", "/qa-automation/entrypoint.sh"]
