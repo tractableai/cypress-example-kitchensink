@@ -21,8 +21,8 @@ COPY cypress ./cypress
 
 # install NPM dependencies and Cypress binary
 ENV CI=true
-ENV CYPRESS_CACHE_FOLDER=cache
-RUN mkdir -p cache && npm ci
+ENV CYPRESS_CACHE_FOLDER=/harness/cache
+RUN mkdir -p /harness/cache && npm ci
 
 RUN npx cypress cache path && \
     npx cypress cache list && \
