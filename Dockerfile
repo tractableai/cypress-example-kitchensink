@@ -19,12 +19,12 @@ COPY cypress.config.js cypress ./
 COPY cypress ./cypress
 
 # Set the Cypress Cache folder
-# During CI in Harness it should be `/harness/.cache`
-# The `/harness/.cache` should be populated by one of the S3 retrieve cache steps
-ARG CYPRESS_CACHE=/root/.cache/Cypress
-ENV CYPRESS_CACHE_FOLDER=/qa-automation/.cache
+# During CI in Harness LOCAL_CACHE_DIR should be `.cache`
+# The `.cache` should be populated by one of the S3 retrieve cache steps
+ARG LOCAL_CACHE_DIR=/root/.cache
+ENV CYPRESS_CACHE_FOLDER=/qa-automation/.cache/Cypress
 # Copy local cypress cache over into docker image
-COPY $CYPRESS_CACHE .cache
+COPY $LOCAL_CACHE_DIR .cache
 
 # Install all dependencies
 RUN env && ls -al $CYPRESS_CACHE_FOLDER && yarn install --frozen-lockfile
