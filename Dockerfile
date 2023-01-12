@@ -29,9 +29,9 @@ COPY cypress ./cypress
 # RUN mkdir -p ~/.cache/
 ENV DOCKER_CACHE_FOLDER=/home/node/.cache/Cypress
 ARG LOCAL_CACHE_FOLDER=/harness/.cache/Cypress
-# Copy over cypress cache into docker image
-COPY $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
-RUN ls -al /root/.cache/Cypress/
+# Copy over local cypress cache into docker image
+COPY --chown=node $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
+RUN ls -al $DOCKER_CACHE_FOLDER
 # Force cypress CLI to use our cache
 ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER
 
