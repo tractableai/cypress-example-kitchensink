@@ -2,6 +2,7 @@
 FROM cypress/included:12.3.0
 
 ENV DEBUG=cypress:*
+ENV CI=true
 
 # Be aware this docker container will run as root
 USER root
