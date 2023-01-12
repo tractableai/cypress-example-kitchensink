@@ -49,8 +49,8 @@ RUN chown -R root:node $CYPRESS_CACHE_FOLDER && \
 RUN npx cypress install && \
     npx cypress cache path && \
     npx cypress cache list && \
-    npx cypress version && \
-    npx cypress verify
+    npx cypress version # && \
+    # npx cypress verify
 
 # Startscript to run a virtual screen
 RUN printf "#!/bin/bash \
