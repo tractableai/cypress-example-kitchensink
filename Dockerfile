@@ -4,8 +4,6 @@ FROM cypress/included:12.3.0
 ENV DEBUG=cypress:*
 ENV CI=true
 
-# Be aware this docker container will run as root
-USER root
 # Change the workdir from `/` to `/qa-automation`
 WORKDIR /qa-automation
 
@@ -23,33 +21,16 @@ COPY app ./app
 COPY cypress.config.js cypress ./
 COPY cypress ./cypress
 
-# Set the Cypress Cache folder
-# During CI in Harness LOCAL_CACHE_DIR should be `.cache`
-# The `.cache` should be populated by one of the S3 retrieve cache steps
-#ARG LOCAL_CACHE_FOLDER=.cache
-#ENV DOCKER_CACHE_FOLDER=/home/node/.cache
-## Copy over local cypress cache into docker image
-#COPY --chown=root:node $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
-#RUN ls -al $DOCKER_CACHE_FOLDER
-## Force cypress CLI to use our cache
-# ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER/Cypress
-# ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress/
-
 # Install all project dependencies
 # Use our Nexus artifactory for Tractable npm packages
-RUN chown -R root:node $CYPRESS_CACHE_FOLDER && \
-    chmod -R g+w $CYPRESS_CACHE_FOLDER && \
-    ls -al $CYPRESS_CACHE_FOLDER && \
-    env && \
-    yarn config set registry https://nexus.tractable.ai/repository/npm-tractable/ && \
+RUN env && \
     yarn install --frozen-lockfile
-    # && yarn cache clean --all
 
 # Install cypress if necessary (otherwise will take from cache)
 RUN npx cypress install && \
     npx cypress cache path && \
     npx cypress cache list && \
-    npx cypress version # && \
+    npx cypress version
     # npx cypress verify
 
 # Startscript to run a virtual screen
