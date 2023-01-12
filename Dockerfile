@@ -74,3 +74,5 @@ ENTRYPOINT ["npx"]
 #   docker build --build-arg LOCAL_CACHE_DIR=.cache/Cypress -t cypress:local .
 # Run the cypress tests while using our cypress director for parallel runs
 #   docker run --rm --net=host -e CYPRESS_API_URL="https://director-sorry-cypress.infra-eu.k8s.tractable.io" cypress:local cy2 run --record --key XXX --parallel --ci-build-id "local-$(date +'%H:%M:%S')"
+# If you just wanna see what's inside your new image:
+#   docker run --rm -it --entrypoint=/bin/bash cypress:local
