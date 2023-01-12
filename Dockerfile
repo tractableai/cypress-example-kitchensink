@@ -32,11 +32,15 @@ COPY cypress ./cypress
 #COPY --chown=root:node $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
 #RUN ls -al $DOCKER_CACHE_FOLDER
 ## Force cypress CLI to use our cache
-#ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER/Cypress
+# ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER/Cypress
+# ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress/
 
 # Install all project dependencies
 # Use our Nexus artifactory for Tractable npm packages
-RUN env && \
+RUN chown -R root:node $CYPRESS_CACHE_FOLDER && \
+    chmod -R g+w $CYPRESS_CACHE_FOLDER && \
+    ls -al $CYPRESS_CACHE_FOLDER && \
+    env && \
     yarn config set registry https://nexus.tractable.ai/repository/npm-tractable/ && \
     yarn install --frozen-lockfile
     # && yarn cache clean --all
