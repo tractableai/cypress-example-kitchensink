@@ -26,13 +26,13 @@ COPY cypress ./cypress
 # Set the Cypress Cache folder
 # During CI in Harness LOCAL_CACHE_DIR should be `.cache`
 # The `.cache` should be populated by one of the S3 retrieve cache steps
-ARG LOCAL_CACHE_FOLDER=.cache
-ENV DOCKER_CACHE_FOLDER=/home/node/.cache
-# Copy over local cypress cache into docker image
-COPY --chown=root:node $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
-RUN ls -al $DOCKER_CACHE_FOLDER
-# Force cypress CLI to use our cache
-ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER/Cypress
+#ARG LOCAL_CACHE_FOLDER=.cache
+#ENV DOCKER_CACHE_FOLDER=/home/node/.cache
+## Copy over local cypress cache into docker image
+#COPY --chown=root:node $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
+#RUN ls -al $DOCKER_CACHE_FOLDER
+## Force cypress CLI to use our cache
+#ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER/Cypress
 
 # Install all project dependencies
 # Use our Nexus artifactory for Tractable npm packages
@@ -69,13 +69,9 @@ ENTRYPOINT ["npx"]
 # Install the cypress package into your node_modules
 #   yarn config set registry https://nexus.tractable.ai/repository/npm-tractable/
 #   yarn install
-# Generate a local cypress cache with cypress binaries
-#   CYPRESS_CACHE_FOLDER=.cache/Cypress yarn npx cypress install
 # Build a local docker image while using our cache with the binaries
-#   docker build --build-arg LOCAL_CACHE_DIR=.cache/Cypress -t cypress:local .
+#   docker build -t cypress:local .
 # Run the cypress tests while using our cypress director for parallel runs
 #   docker run --rm --net=host -e CYPRESS_API_URL="https://director-sorry-cypress.infra-eu.k8s.tractable.io" cypress:local cy2 run --record --key XXX --parallel --ci-build-id "local-$(date +'%H:%M:%S')"
 # If you just wanna see what's inside your new image:
 #   docker run --rm -it --entrypoint=/bin/bash cypress:local
-# To clear your local cypress installation
-#   CYPRESS_CACHE_FOLDER=.cache/Cypress yarn npx cypress cache clear
