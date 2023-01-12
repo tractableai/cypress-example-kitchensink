@@ -67,6 +67,7 @@ ENTRYPOINT ["npx"]
 
 # Local build workflow example
 # Install the cypress package into your node_modules
+#   yarn config set registry https://nexus.tractable.ai/repository/npm-tractable/
 #   yarn install
 # Generate a local cypress cache with cypress binaries
 #   CYPRESS_CACHE_FOLDER=.cache/Cypress yarn npx cypress install
@@ -76,3 +77,5 @@ ENTRYPOINT ["npx"]
 #   docker run --rm --net=host -e CYPRESS_API_URL="https://director-sorry-cypress.infra-eu.k8s.tractable.io" cypress:local cy2 run --record --key XXX --parallel --ci-build-id "local-$(date +'%H:%M:%S')"
 # If you just wanna see what's inside your new image:
 #   docker run --rm -it --entrypoint=/bin/bash cypress:local
+# To clear your local cypress installation
+#   CYPRESS_CACHE_FOLDER=.cache/Cypress yarn npx cypress cache clear
