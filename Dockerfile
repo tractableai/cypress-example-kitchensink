@@ -24,16 +24,15 @@ COPY cypress.config.js cypress ./
 COPY cypress ./cypress
 
 # Set the Cypress Cache folder
-# During CI in Harness LOCAL_CACHE_DIR should be `/harness/.cache/Cypress`
-# The `/harness/.cache/Cypress` should be populated by one of the S3 retrieve cache steps
-# RUN mkdir -p ~/.cache/
-ENV DOCKER_CACHE_FOLDER=/home/node/.cache/Cypress
-ARG LOCAL_CACHE_FOLDER=/harness/.cache/Cypress
+# During CI in Harness LOCAL_CACHE_DIR should be `.cache`
+# The `.cache` should be populated by one of the S3 retrieve cache steps
+ARG LOCAL_CACHE_FOLDER=.cache
+ENV DOCKER_CACHE_FOLDER=/home/node/.cache
 # Copy over local cypress cache into docker image
-COPY --chown=node $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
+COPY --chown=root:node $LOCAL_CACHE_FOLDER $DOCKER_CACHE_FOLDER
 RUN ls -al $DOCKER_CACHE_FOLDER
 # Force cypress CLI to use our cache
-ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER
+ENV CYPRESS_CACHE_FOLDER=$DOCKER_CACHE_FOLDER/Cypress
 
 # Install all project dependencies
 # Use our Nexus artifactory for Tractable npm packages
