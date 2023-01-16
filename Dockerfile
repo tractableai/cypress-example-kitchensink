@@ -28,7 +28,10 @@ COPY cypress ./cypress
 RUN env && \
     yarn add cypress@12.3.0 --dev && \
     yarn install --frozen-lockfile && \
-    yarn cache clean
+    yarn cache clean && \
+    chown -R node /home/node
+
+USER node
 
 # Install cypress if necessary (otherwise will take from cache)
 RUN npx cypress install && \
