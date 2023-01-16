@@ -3,13 +3,13 @@ FROM cypress/included:12.3.0
 
 ENV DEBUG=cypress:*
 ENV CI=true
+# Don't use the root folder to cache cypress binaries
 # ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress/
 ENV CYPRESS_CACHE_FOLDER=/home/node/.cache/Cypress/
 
 # Used for Xvfb screen. Reference https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
 EXPOSE 8099
-# Set this empty for local runs
-# Must be the same for as the X11 Display Server for Harness runs
+# Leave DISPLAY empty for local runs; For Harness runs must be the X11 Display Server port
 # ENV DISPLAY=:8099
 
 # Install ffmpeg and xvfb
@@ -37,12 +37,13 @@ WORKDIR /qa-automation
 USER node
 
 # Copy Cypress tests
-COPY cypress.config.js cypress ./
+COPY cypress.config.js ./
 COPY cypress ./cypress
 
 # Only needed for this example project to start a webserver under port 8080 for the tests
+# For other projects copy whatever you need to build
 COPY scripts ./scripts
-COPY serve.json ./
+COPY serve.json package.json ./
 COPY app ./app
 EXPOSE 8080
 
@@ -53,21 +54,8 @@ RUN npx cypress install && \
     npx cypress version && \
     npx cypress verify
 
-# Startscript to run a virtual screen
-#RUN printf "#!/bin/bash \
-#\nXvfb -screen 0 1024x768x24 :8099 & \
-#\nwhile true \
-#\ndo \
-#\n  echo \"Running Xvfb\" \
-#\n  ps -ef|grep Xvfb \
-#\n  sleep 5 \
-#\ndone \
-#" > entrypoint.sh && cat entrypoint.sh
-
-
-
 # start the container with npx
-ENTRYPOINT ["cypress"]
+ENTRYPOINT ["npx"]
 
 # Local build workflow example
 # Install the cypress package into your node_modules
