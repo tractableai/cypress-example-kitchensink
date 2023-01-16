@@ -30,16 +30,12 @@ RUN env && \
     yarn cache clean && \
     chown -R node /home/node
 
-# Change the workdir from `/` to `/qa-automation`
-WORKDIR /qa-automation
-
 # Setting the user to NODE instead of running the container as ROOT
 # In Harness you will have to run the container as user 1000 (default)
 USER node
 
-# Copy Cypress tests
-COPY cypress.config.js ./
-COPY cypress ./cypress
+# Change the workdir from `/` to `/qa-automation`
+WORKDIR /qa-automation
 
 # Only needed for this example project to start a webserver under port 8080 for the tests
 # For other projects copy whatever you need to build
@@ -47,6 +43,10 @@ COPY scripts ./scripts
 COPY serve.json package.json ./
 COPY app ./app
 EXPOSE 8080
+
+# Copy Cypress tests
+COPY cypress.config.js ./
+COPY cypress ./cypress
 
 # Install cypress if necessary (otherwise will take from cache)
 RUN npx cypress install && \
