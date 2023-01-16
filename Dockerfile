@@ -60,7 +60,7 @@ RUN npx cypress install && \
 EXPOSE 8099
 # Set this empty for local runs
 # Must be the same for as the X11 Display Server for Harness runs
-ENV DISPLAY=:8099
+# ENV DISPLAY=:8099
 
 # start the container with npx
 ENTRYPOINT ["cypress"]
