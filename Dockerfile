@@ -18,7 +18,8 @@ RUN whoami && apt-get update && apt-get install -y --no-install-recommends \
     xvfb=2:1.20.11-1+deb11u4 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy our test application
+# Copy node files as preparation for installing dependencies
+WORKDIR /
 COPY package.json yarn.lock ./
 
 # Install all project dependencies
@@ -58,9 +59,6 @@ RUN npx cypress install && \
 ENTRYPOINT ["npx"]
 
 # Local build workflow example
-# Install the cypress package into your node_modules
-#   yarn config set registry https://nexus.tractable.ai/repository/npm-tractable/
-#   yarn install
 # Build a local docker image while using our cache with the binaries
 #   docker build -t cypress:local .
 # Run the cypress tests while using our cypress director for parallel runs
