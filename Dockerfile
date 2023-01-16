@@ -23,6 +23,9 @@ COPY app ./app
 COPY cypress.config.js cypress ./
 COPY cypress ./cypress
 
+# Only needed for this example project to start a webserver under port 8080 for the tests
+COPY scripts ./scripts
+
 # Install all project dependencies
 # Use our Nexus artifactory for Tractable npm packages
 RUN env && \
@@ -31,6 +34,8 @@ RUN env && \
     yarn cache clean && \
     chown -R node /home/node
 
+# Setting the user to NODE instead of running the container as ROOT
+# In Harness you will have to run the container as user 1000 (default)
 USER node
 
 # Install cypress if necessary (otherwise will take from cache)
@@ -53,6 +58,9 @@ RUN npx cypress install && \
 
 # Used for Xvfb screen. Reference https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
 EXPOSE 8099
+# Set this empty for local runs
+# Must be the same for as the X11 Display Server for Harness runs
+ENV DISPLAY=:8099
 
 # start the container with npx
 ENTRYPOINT ["cypress"]
