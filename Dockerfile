@@ -1,8 +1,9 @@
 # use Cypress provided image with all dependencies included
-FROM cypress/included:12.3.0
+FROM cypress/included:10.11.0
 
 ENV DEBUG=cypress:*
 ENV CI=true
+ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress/
 
 # Change the workdir from `/` to `/qa-automation`
 WORKDIR /qa-automation
@@ -24,31 +25,32 @@ COPY cypress ./cypress
 # Install all project dependencies
 # Use our Nexus artifactory for Tractable npm packages
 RUN env && \
+    npm install cypress@10.11.0 --save-dev && \
     yarn install --frozen-lockfile
 
 # Install cypress if necessary (otherwise will take from cache)
 RUN npx cypress install && \
     npx cypress cache path && \
     npx cypress cache list && \
-    npx cypress version
-    # npx cypress verify
+    npx cypress version && \
+    npx cypress verify
 
 # Startscript to run a virtual screen
-RUN printf "#!/bin/bash \
-\nXvfb -screen 0 1024x768x24 :8099 & \
-\nwhile true \
-\ndo \
-\n  echo \"Running Xvfb\" \
-\n  ps -ef|grep Xvfb \
-\n  sleep 5 \
-\ndone \
-" > entrypoint.sh && cat entrypoint.sh
+#RUN printf "#!/bin/bash \
+#\nXvfb -screen 0 1024x768x24 :8099 & \
+#\nwhile true \
+#\ndo \
+#\n  echo \"Running Xvfb\" \
+#\n  ps -ef|grep Xvfb \
+#\n  sleep 5 \
+#\ndone \
+#" > entrypoint.sh && cat entrypoint.sh
 
 # Used for Xvfb screen. Reference https://docs.cypress.io/guides/continuous-integration/introduction#Xvfb
 EXPOSE 8099
 
 # start the container with npx
-ENTRYPOINT ["npx"]
+ENTRYPOINT ["cypress"]
 
 # Local build workflow example
 # Install the cypress package into your node_modules
