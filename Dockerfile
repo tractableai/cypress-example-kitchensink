@@ -3,7 +3,8 @@ FROM cypress/included:12.3.0
 
 ENV DEBUG=cypress:*
 ENV CI=true
-ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress/
+# ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress/
+ENV CYPRESS_CACHE_FOLDER=/home/node/.cache/Cypress/
 
 # Change the workdir from `/` to `/qa-automation`
 WORKDIR /qa-automation
