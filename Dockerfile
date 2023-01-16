@@ -1,5 +1,5 @@
 # use Cypress provided image with all dependencies included
-FROM cypress/included:10.11.0
+FROM cypress/included:12.3.0
 
 ENV DEBUG=cypress:*
 ENV CI=true
@@ -25,8 +25,9 @@ COPY cypress ./cypress
 # Install all project dependencies
 # Use our Nexus artifactory for Tractable npm packages
 RUN env && \
-    npm install cypress@10.11.0 --save-dev && \
-    yarn install --frozen-lockfile
+    yarn add cypress@12.3.0 --dev && \
+    yarn install --frozen-lockfile && \
+    yarn cache clean
 
 # Install cypress if necessary (otherwise will take from cache)
 RUN npx cypress install && \
